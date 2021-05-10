@@ -1,0 +1,23 @@
+const Router = require('express')
+const router = new Router()
+const eventRoute = require('./eventRoute')
+const fileRoute = require('./fileRoute')
+const manualRoute = require('./manualRoute')
+const newsRoute = require('./newsRoute')
+const questionRoute = require('./questionRoute')
+const userRoute = require('./userRoute')
+const roleRoute = require('./roleRoute')
+const positionRoute = require('./positionRoute')
+const eventTypeRoute = require('./eventTypeRoute')
+
+router.use('/users', userRoute)
+router.use('/news', newsRoute)
+router.use('/questions', questionRoute)
+router.use('/manuals', manualRoute)
+router.use('/events', eventRoute)
+router.use('/files', fileRoute)
+router.use('/roles', roleRoute)
+router.use('/positions', positionRoute)
+router.use('/event-types', eventTypeRoute)
+
+module.exports = router
