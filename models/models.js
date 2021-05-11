@@ -1,5 +1,5 @@
 const sequelize = require('../db')
-const {DataTypes} = require('sequelize')
+const {DataTypes, Sequelize} = require('sequelize')
 
 const ID = {
   type: DataTypes.INTEGER,
@@ -13,7 +13,7 @@ const TITLE = {
   allowNull: false
 }
 
-const DESCRIPTION = {
+const STRING = {
   type: DataTypes.STRING
 }
 
@@ -29,22 +29,25 @@ const User = sequelize.define('user', {
     unique: true,
     allowNull: false
   },
-  password: {type: DataTypes.STRING}
+  password: STRING,
+  position_: STRING,
+  role_: {type: Sequelize.ARRAY(Sequelize.TEXT)}
 })
 
 const Role = sequelize.define('role', {
   id: ID,
-  role: {type: DataTypes.STRING}
+  role: STRING
 })
 
 const Position = sequelize.define('position', {
-  id: ID
+  id: ID,
+  position: STRING
 })
 
 const News = sequelize.define('news', {
   id: ID,
   title: TITLE,
-  description: DESCRIPTION,
+  description: STRING,
   rating: RATING
 })
 
@@ -54,20 +57,20 @@ const Question = sequelize.define('question', {
 })
 const Answer = sequelize.define('answer', {
   id: ID,
-  answer: {type: DataTypes.STRING}
+  answer: STRING
 })
 
 const Event = sequelize.define('event', {
   id: ID,
   title: TITLE,
-  description: DESCRIPTION,
+  description: STRING,
   rating: RATING
 })
 
 const EventType = sequelize.define('event_type', {
   id: ID,
   title: TITLE,
-  description: DESCRIPTION,
+  description: STRING,
   rating: RATING,
   link: {type: DataTypes.STRING}
 })
@@ -75,18 +78,18 @@ const EventType = sequelize.define('event_type', {
 const Manual = sequelize.define('manual', {
   id: ID,
   title: TITLE,
-  description: DESCRIPTION
+  description: STRING
 })
 
 const Comment = sequelize.define('comment', {
   id: ID,
-  comment: {type: DataTypes.STRING}
+  comment: STRING
 })
 
 const File = sequelize.define('file', {
   id: ID,
-  name: {type: DataTypes.STRING},
-  pathToFile: {type: DataTypes.STRING}
+  name: STRING,
+  pathToFile: STRING
 })
 
 User.hasMany(Role)
