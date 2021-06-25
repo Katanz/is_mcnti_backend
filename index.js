@@ -5,7 +5,8 @@ const fileUpload = require('express-fileupload')
 const sequelize = require('./db')
 const models = require('./models/models')
 const router = require('./routes/routes')
-const errorHandler = require('./middleware/ErrorHandlerMiddleware')
+const errorHandler = require('./middleware/errorHandlerMiddleware')
+const path = require('path')
 
 const PORT = process.env.PORT
 
@@ -13,10 +14,11 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use('/api', router)
 
-//middleware with errors handler
+//middlewares
 app.use(errorHandler)
 
 const start = async () => {
