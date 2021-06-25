@@ -1,5 +1,5 @@
 const sequelize = require('../db')
-const {DataTypes, Sequelize} = require('sequelize')
+const {DataTypes} = require('sequelize')
 
 const ID = {
   type: DataTypes.INTEGER,
@@ -13,42 +13,26 @@ const TITLE = {
   allowNull: false
 }
 
-const STRING = {
-  type: DataTypes.STRING
-}
-
-const RATING = {type: DataTypes.FLOAT}
-
+//define tables in db
 const User = sequelize.define('user', {
   id: ID,
-  firstName: {type: DataTypes.STRING, allowNull: false},
-  secondName: {type: DataTypes.STRING, allowNull: false},
-  thirdName: {type: DataTypes.STRING, allowNull: true},
+  fullName: {type: DataTypes.STRING, allowNull: false},
   email: {
     type: DataTypes.STRING,
     unique: true,
     allowNull: false
   },
-  password: STRING,
-  position_: STRING,
-  role_: {type: Sequelize.ARRAY(Sequelize.TEXT)}
+  password: {type: DataTypes.STRING, allowNull: false}
 })
 
 const Role = sequelize.define('role', {
   id: ID,
-  role: STRING
+  role: {type: DataTypes.STRING}
 })
 
 const Position = sequelize.define('position', {
   id: ID,
-  position: STRING
-})
-
-const News = sequelize.define('news', {
-  id: ID,
-  title: TITLE,
-  description: STRING,
-  rating: RATING
+  position: {type: DataTypes.STRING}
 })
 
 const Question = sequelize.define('question', {
@@ -57,81 +41,109 @@ const Question = sequelize.define('question', {
 })
 const Answer = sequelize.define('answer', {
   id: ID,
-  answer: STRING
+  answer: {type: DataTypes.STRING}
 })
 
 const Event = sequelize.define('event', {
   id: ID,
   title: TITLE,
-  description: STRING,
-  rating: RATING
+  description: {type: DataTypes.STRING}
 })
 
 const EventType = sequelize.define('event_type', {
   id: ID,
-  title: TITLE,
-  description: STRING,
-  rating: RATING,
-  link: {type: DataTypes.STRING}
+  name: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false
+  }
 })
 
 const Manual = sequelize.define('manual', {
   id: ID,
   title: TITLE,
-  description: STRING
+  description: {type: DataTypes.STRING}
 })
 
 const Comment = sequelize.define('comment', {
   id: ID,
-  comment: STRING
+  comment: {type: DataTypes.STRING}
 })
 
 const File = sequelize.define('file', {
   id: ID,
-  name: STRING,
-  pathToFile: STRING
+  name: {type: DataTypes.STRING},
+  pathToFile: {type: DataTypes.STRING}
 })
 
-User.hasMany(Role)
-Role.belongsTo(User)
+const UserRoles = sequelize.define('user_roles', {
+  id: ID
+})
 
-User.hasOne(Position)
-Position.belongsTo(User)
+const UserPositions = sequelize.define('users_positions', {
+  id: ID
+})
 
-User.hasMany(News)
-News.belongsTo(User)
+const QuestionsAnswers = sequelize.define(
+  'question_answers',
+  {
+    id: ID
+  }
+)
+
+//make relations between tables
+
+User.belongsToMany(Role, {through: UserRoles})
+Role.belongsToMany(User, {through: UserRoles})
+
+User.belongsToMany(Position, {through: UserPositions})
+Position.belongsToMany(User, {through: UserPositions})
 
 User.hasMany(Question)
 Question.belongsTo(User)
 
 User.hasMany(Answer)
-Question.belongsTo(User)
+Answer.belongsTo(User)
 
-Question.hasOne(Answer)
-Answer.belongsTo(Question)
-
-User.hasMany(Manual)
-Manual.belongsTo(User)
+Question.belongsToMany(Answer, {through: QuestionsAnswers})
+Answer.belongsToMany(Question, {through: QuestionsAnswers})
 
 User.hasMany(Event)
 Event.belongsTo(User)
 
-Event.hasOne(EventType)
-EventType.belongsTo(Event)
+EventType.hasOne(Event)
+Event.belongsTo(EventType)
 
 Event.hasMany(Comment)
 Comment.belongsTo(Event)
+
+Event.hasMany(File)
+File.belongsTo(Event)
+
+User.hasMany(Comment)
+Comment.belongsTo(User)
+
+User.hasMany(Manual)
+Manual.belongsTo(User)
+
+User.hasMany(File)
+File.belongsTo(User)
+
+Manual.hasMany(File)
+File.belongsTo(Manual)
 
 module.exports = {
   User,
   Role,
   Position,
-  News,
   Question,
   Answer,
   Event,
   EventType,
   Manual,
   Comment,
-  File
+  File,
+  UserRoles,
+  UserPositions,
+  QuestionsAnswers
 }
