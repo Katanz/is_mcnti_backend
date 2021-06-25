@@ -1,9 +1,9 @@
 const Router = require('express')
 const router = new Router()
-const eventController = require('../controllers/EventController')
+const eventTypeController = require('../controllers/EventTypeController')
 
-router.post('/add-event', eventController.create)
-router.get('/events', eventController.getAll)
-router.delete('/events/:id', eventController.delete)
+router.post('/', eventTypeController.create)
+router.get('/', eventTypeController.getAll)
+router.delete('/:id', eventTypeController.delete)
 
 module.exports = router
