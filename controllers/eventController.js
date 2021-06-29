@@ -61,6 +61,7 @@ class EventController {
     let {eventId, eventTypeId, limit, page} = req.query
     page = page || 1
     limit = limit || 9
+    eventTypeId = eventTypeId || 1
     let events
     let offset = page * limit - limit
     if (!eventId && !eventTypeId) {

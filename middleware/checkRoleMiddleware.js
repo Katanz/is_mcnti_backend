@@ -35,7 +35,7 @@ module.exports = function (role) {
           makeRoleId = 4
           break
 
-        default:
+        default: 'USER'
           makeRoleId = 4
           break
       }

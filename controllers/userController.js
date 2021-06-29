@@ -20,7 +20,7 @@ const generateJwt = (
       positionId
     },
     process.env.SECRET_KEY,
-    {expiresIn: '24h'}
+    {expiresIn: '12h'}
   )
 }
 
@@ -69,32 +69,40 @@ class UserController {
   }
 
   async login(req, res, next) {
-    const {email, password} = req.body
-    const user = await User.findOne({where: {email}})
-    if (!user) {
-      return next(
-        ApiError.internal('Пользователь не найден')
+    try {
+      const {email, password} = req.body
+      console.log('email is', email)
+      const user = await User.findOne({where: {email}})
+      if (!user) {
+        return next(
+          ApiError.internal('Пользователь не найден')
+        )
+      }
+      let comparePassword = bcrypt.compareSync(
+        password,
+        user.password
       )
-    }
-    let comparePassword = bcrypt.compareSync(
-      password,
-      user.password
-    )
-    if (!comparePassword) {
-      return next(
-        ApiError.internal('Указан неверный пароль ')
+      if (!comparePassword) {
+        return next(
+          ApiError.internal('Указан неверный пароль ')
+        )
+      }
+
+      const roleId = 2
+      const positionId = 2
+
+      const token = generateJwt(
+        user.id,
+        user.fullName,
+        user.email,
+        roleId,
+        positionId
       )
+
+      return res.json({token})
+    } catch (error) {
+      console.log(error.message)
     }
-
-    const token = generateJwt(
-      user.id,
-      user.fullName,
-      user.email,
-      user.roleId,
-      user.positionId
-    )
-
-    return res.json(token)
   }
 
   async isAuth(req, res, next) {
